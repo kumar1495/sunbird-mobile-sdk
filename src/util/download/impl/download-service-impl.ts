@@ -103,12 +103,12 @@ export class DownloadServiceImpl implements DownloadService, SdkServiceOnInitDel
     }
 
     onInit(): Observable<undefined> {
-        return this.switchToNextDownloadRequest()
-            .pipe(
-                mergeMap(() => {
-                        return this.listenForDownloadProgressChanges();
-                })
-            );
+            return this.switchToNextDownloadRequest()
+                .pipe(
+                    mergeMap(() => {
+                            return this.listenForDownloadProgressChanges();
+                    })
+                );
     }
 
     download(downloadRequests: DownloadRequest[]): Observable<undefined> {
@@ -241,7 +241,7 @@ export class DownloadServiceImpl implements DownloadService, SdkServiceOnInitDel
                             anyDownloadRequest.downloadedFilePath = dataDirectory +
                                 DownloadServiceImpl.DOWNLOAD_DIR_NAME + '/' + anyDownloadRequest.filename;
                             anyDownloadRequest.downloadId = downloadId;
-                            this.currentDownloadRequest$.next(anyDownloadRequest);
+                            this.currentDownloadRequest$.next(anyDownloadRequest);                           
                         }),
                         tap(async () => await DownloadServiceImpl.generateDownloadStartTelemetry(anyDownloadRequest!)),
                         mapTo(undefined),
