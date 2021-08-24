@@ -427,7 +427,7 @@ export class ContentServiceImpl implements ContentService, DownloadCompleteDeleg
     }
 
     importEcar(ecarImportRequest: EcarImportRequest): Observable<ContentImportResponse[]> {
-
+        ecarImportRequest.destinationFolder = (window.device.platform.toLowerCase() === "ios") ?"file://"+ecarImportRequest.destinationFolder+"/":ecarImportRequest.destinationFolder;
         return from(this.fileService.exists(ecarImportRequest.sourceFilePath).then((entry: Entry) => {
             const importContentContext: ImportContentContext = {
                 isChildContent: ecarImportRequest.isChildContent,
@@ -576,7 +576,8 @@ export class ContentServiceImpl implements ContentService, DownloadCompleteDeleg
     searchContent(
         contentSearchCriteria: ContentSearchCriteria,
         request?: { [key: string]: any },
-        apiHandler?: ApiRequestHandler<SearchRequest, SearchResponse>
+        apiHandler?: ApiRequestHandler<SearchRequest, SearchResponse>,
+        isFromContentAggregator?: boolean,
     ): Observable<ContentSearchResult> {
         contentSearchCriteria = JSON.parse(JSON.stringify(contentSearchCriteria));
         if (contentSearchCriteria.facetFilters) {
@@ -616,8 +617,10 @@ export class ContentServiceImpl implements ContentService, DownloadCompleteDeleg
                 return apiHandler.handle(searchRequest).pipe(
                     map((searchResponse: SearchResponse) => {
                         if (!contentSearchCriteria.facetFilters && contentSearchCriteria.searchType === SearchType.SEARCH) {
-                            searchRequest.filters.contentType = [];
-                            searchRequest.filters.primaryCategory = [];
+                            if (!isFromContentAggregator) {
+                                searchRequest.filters.contentType = [];
+                                searchRequest.filters.primaryCategory = [];
+                            }
                             searchRequest.filters.audience = [];
                         }
                         return searchHandler.mapSearchResponse(contentSearchCriteria, searchResponse, searchRequest);
