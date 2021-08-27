@@ -239,7 +239,7 @@ export class DownloadServiceImpl implements DownloadService, SdkServiceOnInitDel
                         tap((downloadId) => {
                             let dataDirectory = window.device.platform.toLowerCase() === "ios" ? cordova.file.documentsDirectory : cordova.file.externalDataDirectory
                             anyDownloadRequest.downloadedFilePath = dataDirectory +
-                                DownloadServiceImpl.DOWNLOAD_DIR_NAME + '/' + anyDownloadRequest.filename;
+                            DownloadServiceImpl.DOWNLOAD_DIR_NAME + '/' + anyDownloadRequest.filename;
                             anyDownloadRequest.downloadId = downloadId;
                             this.currentDownloadRequest$.next(anyDownloadRequest);                           
                         }),
